@@ -2,45 +2,47 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Tour 360° Casa M2</title>
+    <title>Tour 360° Casa - 6 ambientes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body, html { margin:0; padding:0; height:100%; overflow:hidden; background:#000; font-family:Arial,sans-serif; }
         #panorama { width:100%; height:100%; }
-        
-        /* Desplegable tipo Sketchfab - esquina inferior centro */
+
+        /* Selector elegante - siempre visible, incluso en fullscreen */
         .scene-selector {
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            border-radius: 8px;
-            padding: 8px 12px;
+            background: rgba(0,0,0,0.75);
+            border-radius: 12px;
+            padding: 10px 16px;
             color: white;
-            z-index: 1000;
+            z-index: 9999;           /* ← siempre arriba de todo */
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transition: opacity 0.4s;
         }
         .scene-selector button {
             background: none;
             border: none;
             color: white;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
-            padding: 0 10px;
+            padding: 0 8px;
         }
         .scene-selector select {
             background: rgba(255,255,255,0.15);
             color: white;
             border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 15px;
-            cursor: pointer;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            min-width: 220px;
         }
-        .scene-selector select option { background:#222; }
+        .scene-selector select option { background:#111; }
     </style>
     <link rel="stylesheet" href="https://cdn.pannellum.org/2.5/pannellum.css"/>
     <script src="https://cdn.pannellum.org/2.5/pannellum.js"></script>
@@ -48,83 +50,79 @@
 <body>
     <div id="panorama"></div>
 
-    <!-- Selector elegante estilo Sketchfab -->
-    <div class="scene-selector">
-        <button onclick="prevScene()" title="Anterior">←</button>
+    <!-- Selector que NUNCA se superpone ni desaparece -->
+    <div class="scene-selector" id="selector">
+        <button onclick="prevScene()">Previous</button>
         <select id="sceneSelect" onchange="loadScene(this.value)"></select>
-        <button onclick="nextScene()" title="Siguiente">→</button>
+        <button onclick="nextScene()">Next</button>
     </div>
 
     <script>
         const scenes = {
-            living:   { title: "1. Ingreso",              panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-1.jpg" },
-            cocina:   { title: "2. Cocina / Comedor",     panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-2.jpg" },
-            dormi1:   { title: "3. Estudio",              panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-3.jpg" },
-            dormi2:   { title: "4. Patio",                panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-4.jpg" },
-            baño:     { title: "5. Terraza",              panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-5.jpg" },
-            patio:    { title: "6. Sala de juegos",       panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-6.jpg" }
+            m1: { title: "1. Ingreso",          panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m1.jpg" },
+            m2: { title: "2. Cocina / Comedor", panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2.jpg" },
+            m3: { title: "3. Estudio",          panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m3.jpg" },
+            m4: { title: "4. Patio",            panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m4.jpg" },
+            m5: { title: "5. Terraza",          panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m5.jpg" },
+            m6: { title: "6. Sala de juegos",   panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m6.jpg" }
         };
 
-        let currentScene = 'living';
+        let current = 'm1';
         let viewer = null;
 
-        // Carga escena + hotspots
         function loadScene(id) {
-            currentScene = id;
-            const base = {
+            current = id;
+            const config = {
                 default: { firstScene: id, sceneFadeDuration: 800, autoLoad: true },
+                showTitle: false,          /* ← QUITA el cartel abajo a la izquierda */
+                showFullscreenCtrl: true,
                 scenes: {}
             };
-            // Copia todas las escenas con sus hotspots
+
             Object.keys(scenes).forEach(key => {
-                base.scenes[key] = {
+                config.scenes[key] = {
                     title: scenes[key].title,
                     type: "equirectangular",
                     panorama: scenes[key].panorama,
                     hotSpots: []
                 };
-                // Hotspots personalizados (ajustalos cuando lo veas en vivo)
-                if (key === "ingreso") {
-                    base.scenes[key].hotSpots = [
-                        { pitch: 5,   yaw: 30,   type: "scene", text: "Cocina / Comedor",      sceneId: "cocina" },
-                        { pitch: -5,  yaw: -110, type: "scene", text: "Patio", sceneId: "Patio" },
-                        { pitch: -10, yaw: 170,  type: "scene", text: "Sala de juegos",       sceneId: "juegos" }
-                    ];
+                // HotSpots (ajustalos cuando lo veas en vivo)
+                if (key === "m1") { /* Ingreso */
+                    config.scenes[key].hotSpots.push({ pitch: 0, yaw: 0, type: "scene", text: "Cocina / Comedor", sceneId: "m2" });
                 }
-                if (key === "cocina")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "estudio", sceneId: "estudio" });
-                if (key === "estudio")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "patio", sceneId: "patio" });
-                if (key === "patio")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "terraza", sceneId: "terraza" });
-                if (key === "terraza")     base.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "juegos", sceneId: "juegos" });
-                if (key === "juegos")    base.scenes[key].hotSpots.push({ pitch: -5, yaw: 10, type: "scene", text: "ingreso", sceneId: "ingreso" });
+                if (key === "m2") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "Ingreso", sceneId: "m1" });
+                if (key === "m3") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "Cocina", sceneId: "m2" });
+                if (key === "m4") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 0, type: "scene", text: "Ingreso", sceneId: "m1" });
+                if (key === "m5") config.scenes[key].hotSpots.push({ pitch: -10, yaw: 90, type: "scene", text: "Patio", sceneId: "m4" });
+                if (key === "m6") config.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "Terraza", sceneId: "m5" });
             });
 
             if (viewer) viewer.destroy();
-            viewer = pannellum.viewer('panorama', base);
+            viewer = pannellum.viewer('panorama', config);
             document.getElementById('sceneSelect').value = id;
         }
 
-        // Navegación con flechas
         function nextScene() {
             const order = Object.keys(scenes);
-            const idx = order.indexOf(currentScene);
-            loadScene(order[(idx + 1) % order.length]);
+            const i = order.indexOf(current);
+            loadScene(order[(i + 1) % order.length]);
         }
         function prevScene() {
             const order = Object.keys(scenes);
-            const idx = order.indexOf(currentScene);
-            loadScene(order[(idx - 1 + order.length) % order.length]);
+            const i = order.indexOf(current);
+            loadScene(order[(i - 1 + order.length) % order.length]);
         }
 
-        // Llena el <select>
-        window.onload = function() {
-            const select = document.getElementById('sceneSelect');
+        // Llenar el select
+        window.onload = () => {
+            const sel = document.getElementById('sceneSelect');
             Object.keys(scenes).forEach(id => {
                 const opt = document.createElement('option');
                 opt.value = id;
                 opt.textContent = scenes[id].title;
-                select.appendChild(opt);
+                sel.appendChild(opt);
             });
-            loadScene('living');
+            loadScene('m1');
         };
     </script>
 </body>
