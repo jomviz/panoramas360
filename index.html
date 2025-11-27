@@ -50,11 +50,11 @@
 <body>
     <div id="panorama"></div>
 
-    <!-- Selector que NUNCA se superpone ni desaparece -->
-    <div class="scene-selector" id="selector">
-        <button onclick="prevScene()">Previous</button>
+    <!-- Selector elegante estilo Sketchfab -->
+    <div class="scene-selector">
+        <button onclick="prevScene()" title="Anterior">←</button>
         <select id="sceneSelect" onchange="loadScene(this.value)"></select>
-        <button onclick="nextScene()">Next</button>
+        <button onclick="nextScene()" title="Siguiente">→</button>
     </div>
 
     <script>
@@ -75,7 +75,7 @@
             const config = {
                 default: { firstScene: id, sceneFadeDuration: 800, autoLoad: true },
                 showTitle: false,          /* ← QUITA el cartel abajo a la izquierda */
-                showFullscreenCtrl: true,
+                showFullscreenCtrl: false,
                 scenes: {}
             };
 
