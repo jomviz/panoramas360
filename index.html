@@ -1,49 +1,36 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
     <meta charset="utf-8">
+    <title>Panorama 360° Casa M2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Panorama 360° - Tu Casa</title>
     <style>
-        body { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
-        #panorama { width: 100%; height: 100vh; }
-        .menu { position: absolute; top: 20px; left: 20px; z-index: 100; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; }
-        .menu button { margin: 5px; padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
-        .menu button:hover { background: #0056b3; }
+        body { margin:0; padding:0; overflow:hidden; background:#000; }
+        #panorama { width:100%; height:100vh; }
+        .btn { position:absolute; top:20px; left:20px; z-index:10; background:rgba(0,0,0,0.6); color:white; border:none; padding:10px 15px; margin:5px; border-radius:4px; cursor:pointer; }
+        .btn:hover { background:#007bff; }
     </style>
-    <!-- CDN de Pannellum - súper liviano -->
-    <script src="https://cdn.pannellum.org/2.5/pannellum.js"></script>
     <link rel="stylesheet" href="https://cdn.pannellum.org/2.5/pannellum.css"/>
+    <script src="https://cdn.pannellum.org/2.5/pannellum.js"></script>
 </head>
 <body>
-    <div id="panorama" style="width:100%;height:100%;"></div>
-    
-    <!-- Menú simple para cambiar entre panoramas -->
-    <div class="menu">
-        <button onclick="loadPanorama('m2-1.jpg')">Panorama 1 (Sala)</button>
-        <button onclick="loadPanorama('m2-1.jpg')">Panorama 2 (Cocina)</button>
-    </div>
+    <div id="panorama"></div>
+    <button class="btn" onclick="load('m2-1.jpg')">Living / Cocina</button>
+    <button class="btn" onclick="load('m2-2.jpg')">Dormitorio</button>
 
     <script>
-        let viewer = null;
-        
-        function loadPanorama(imagePath) {
-            const config = {
+        function load(img) {
+            pannellum.viewer('panorama', {
                 "type": "equirectangular",
-                "panorama": https://github.com/jomviz/panoramas360/blob/d943eaf621f0e2f945657585c7b45495a7ec262f/m2-1.jpg,  // ¡Acá cambiá por el nombre exacto de tu imagen!
+                "panorama": "https://raw.githubusercontent.com/jomviz/panoramas360/main/" + img,
                 "autoLoad": true,
                 "showControls": true,
                 "compass": true,
-                "northOffset": 0,
-                "hotSpots": []  // Agregá hotspots si querés enlaces entre panoramas
-            };
-            
-            if (viewer) viewer.destroy();
-            viewer = pannellum.viewer('panorama', config);
+                "autoRotate": -2
+            });
         }
-        
-        // Carga el primero por default
-        window.onload = function() { loadPanorama('imagen1.jpg'); };
+        // Carga el primero al abrir
+        load('m2-1.jpg');
     </script>
 </body>
 </html>
