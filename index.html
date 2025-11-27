@@ -57,12 +57,12 @@
 
     <script>
         const scenes = {
-            living:   { title: "1. Living / Comedor",      panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-1.jpg" },
-            cocina:   { title: "2. Cocina",               panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-2.jpg" },
-            dormi1:   { title: "3. Dormitorio Principal", panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-3.jpg" },
-            dormi2:   { title: "4. Dormitorio 2",         panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-4.jpg" },
-            baño:     { title: "5. Baño",                 panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-5.jpg" },
-            patio:    { title: "6. Patio / Quincho",      panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-6.jpg" }
+            living:   { title: "1. Ingreso",              panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-1.jpg" },
+            cocina:   { title: "2. Cocina / Comedor",     panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-2.jpg" },
+            dormi1:   { title: "3. Estudio",              panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-3.jpg" },
+            dormi2:   { title: "4. Patio",                panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-4.jpg" },
+            baño:     { title: "5. Terraza",              panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-5.jpg" },
+            patio:    { title: "6. Sala de juegos",       panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-6.jpg" }
         };
 
         let currentScene = 'living';
@@ -84,18 +84,18 @@
                     hotSpots: []
                 };
                 // Hotspots personalizados (ajustalos cuando lo veas en vivo)
-                if (key === "living") {
+                if (key === "ingreso") {
                     base.scenes[key].hotSpots = [
-                        { pitch: 5,   yaw: 30,   type: "scene", text: "Cocina",      sceneId: "cocina" },
-                        { pitch: -5,  yaw: -110, type: "scene", text: "Dormitorio 1", sceneId: "dormi1" },
-                        { pitch: -10, yaw: 170,  type: "scene", text: "Patio",       sceneId: "patio" }
+                        { pitch: 5,   yaw: 30,   type: "scene", text: "Cocina / Comedor",      sceneId: "cocina" },
+                        { pitch: -5,  yaw: -110, type: "scene", text: "Patio", sceneId: "Patio" },
+                        { pitch: -10, yaw: 170,  type: "scene", text: "Sala de juegos",       sceneId: "juegos" }
                     ];
                 }
-                if (key === "cocina")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "Living", sceneId: "living" });
-                if (key === "dormi1")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "Living", sceneId: "living" });
-                if (key === "dormi2")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "Living", sceneId: "living" });
-                if (key === "baño")     base.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "Dormitorio 1", sceneId: "dormi1" });
-                if (key === "patio")    base.scenes[key].hotSpots.push({ pitch: -5, yaw: 10, type: "scene", text: "Living", sceneId: "living" });
+                if (key === "cocina")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "estudio", sceneId: "estudio" });
+                if (key === "estudio")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "patio", sceneId: "patio" });
+                if (key === "patio")   base.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "terraza", sceneId: "terraza" });
+                if (key === "terraza")     base.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "juegos", sceneId: "juegos" });
+                if (key === "juegos")    base.scenes[key].hotSpots.push({ pitch: -5, yaw: 10, type: "scene", text: "ingreso", sceneId: "ingreso" });
             });
 
             if (viewer) viewer.destroy();
