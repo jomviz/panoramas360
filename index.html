@@ -70,37 +70,42 @@
         let current = 'm1';
         let viewer = null;
 
-        function loadScene(id) {
-            current = id;
-            const config = {
-                default: { firstScene: id, sceneFadeDuration: 800, autoLoad: true },
-                showTitle: false,          /* ← QUITA el cartel abajo a la izquierda */
-                showFullscreenCtrl: true,
-                scenes: {}
-            };
+      function loadScene(id) {
+    current = id;
+    const config = {
+        default: {
+            firstScene: id,
+            sceneFadeDuration: 800,
+            autoLoad: true,
+            showTitle: false,   // ← apaga el title box
+            title: "",          // ← fuerza vacío
+            author: ""          // ← fuerza vacío
+        },
+        showControls: true,
+        showFullscreenCtrl: true,
+        scenes: {}
+    };
 
-            Object.keys(scenes).forEach(key => {
-                config.scenes[key] = {
-                    title: scenes[key].title,
-                    type: "equirectangular",
-                    panorama: scenes[key].panorama,
-                    hotSpots: []
-                };
-                // HotSpots (ajustalos cuando lo veas en vivo)
-                if (key === "m2-1") { /* Ingreso */
-                    config.scenes[key].hotSpots.push({ pitch: 0, yaw: 0, type: "scene", text: "Cocina / Comedor", sceneId: "m2" });
-                }
-                if (key === "m2-2") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "Ingreso", sceneId: "m2-1" });
-                if (key === "m2-3") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "Cocina", sceneId: "m2-2" });
-                if (key === "m2-4") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 0, type: "scene", text: "Ingreso", sceneId: "m2-1" });
-                if (key === "m2-5") config.scenes[key].hotSpots.push({ pitch: -10, yaw: 90, type: "scene", text: "Patio", sceneId: "m2-4" });
-                if (key === "m2-6") config.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "Terraza", sceneId: "m2-5" });
-            });
+    Object.keys(scenes).forEach(key => {
+        config.scenes[key] = {
+            title: scenes[key].title,
+            type: "equirectangular",
+            panorama: scenes[key].panorama,
+            hotSpots: []
+        };
+        // tus hotspots aquí (igual que antes)
+        if (key === "m1") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 0, type: "scene", text: "Cocina / Comedor", sceneId: "m2" });
+        if (key === "m2") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "Ingreso", sceneId: "m1" });
+        if (key === "m3") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 180, type: "scene", text: "Cocina", sceneId: "m2" });
+        if (key === "m4") config.scenes[key].hotSpots.push({ pitch: 0, yaw: 0, type: "scene", text: "Ingreso", sceneId: "m1" });
+        if (key === "m5") config.scenes[key].hotSpots.push({ pitch: -10, yaw: 90, type: "scene", text: "Patio", sceneId: "m4" });
+        if (key === "m6") config.scenes[key].hotSpots.push({ pitch: 0, yaw: -90, type: "scene", text: "Terraza", sceneId: "m5" });
+    });
 
-            if (viewer) viewer.destroy();
-            viewer = pannellum.viewer('panorama', config);
-            document.getElementById('sceneSelect').value = id;
-        }
+    if (viewer) viewer.destroy();
+    viewer = pannellum.viewer('panorama', config);
+    document.getElementById('sceneSelect').value = id;
+}
 
         function nextScene() {
             const order = Object.keys(scenes);
