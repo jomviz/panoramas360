@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Panorama 360° Casa M2</title>
+    <title>Tour 360° Casa M2 - 6 ambientes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body { margin:0; padding:0; overflow:hidden; background:#000; }
         #panorama { width:100%; height:100vh; }
-        .btn { position:absolute; top:20px; left:20px; z-index:10; background:rgba(0,0,0,0.6); color:white; border:none; padding:10px 15px; margin:5px; border-radius:4px; cursor:pointer; }
+        .btn { position:absolute; top:15px; left:15px; z-index:10; background:rgba(0,0,0,0.7); color:white; border:none; padding:10px 14px; margin:5px; border-radius:6px; cursor:pointer; font-size:14px; }
         .btn:hover { background:#007bff; }
     </style>
     <link rel="stylesheet" href="https://cdn.pannellum.org/2.5/pannellum.css"/>
@@ -15,22 +15,74 @@
 </head>
 <body>
     <div id="panorama"></div>
-    <button class="btn" onclick="load('m2-1.jpg')">Living / Cocina</button>
-    <button class="btn" onclick="load('m2-2.jpg')">Dormitorio</button>
+
+    <!-- Botones para cambiar rápido (opcional, podés borrarlos si querés solo hotspots) -->
+    <button class="btn" onclick="loadScene('living')">Living</button>
+    <button class="btn" onclick="loadScene('cocina')">Cocina</button>
+    <button class="btn" onclick="loadScene('dormi1')">Dormitorio 1</button>
+    <button class="btn" onclick="loadScene('dormi2')">Dormitorio 2</button>
+    <button class="btn" onclick="loadScene('baño')">Baño</button>
+    <button class="btn" onclick="loadScene('patio')">Patio</button>
 
     <script>
-        function load(img) {
+        const scenes = {
+            living: {
+                title: "Living / Comedor",
+                panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-1.jpg",
+                autoLoad: true,
+                hotSpots: [
+                    { pitch: 5, yaw: 25, type: "scene", text: "Ir a Cocina ➜", sceneId: "cocina" },
+                    { pitch: -5, yaw: -120, type: "scene", text: "Ir a Dormitorio 1 ➜", sceneId: "dormi1" },
+                    { pitch: -8, yaw: 170, type: "scene", text: "Salir al Patio ➜", sceneId: "patio" }
+                ]
+            },
+            cocina: {
+                title: "Cocina",
+                panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-2.jpg",
+                hotSpots: [
+                    { pitch: 0, yaw: 180, type: "scene", text: "Volver al Living", sceneId: "living" }
+                ]
+            },
+            dormi1: {
+                title: "Dormitorio Principal",
+                panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-3.jpg",
+                hotSpots: [
+                    { pitch: 0, yaw: -90, type: "scene", text: "Volver al Living", sceneId: "living" },
+                    { pitch: 5, yaw: 90, type: "scene", text: "Ir al Baño ➜", sceneId: "baño" }
+                ]
+            },
+            dormi2: {
+                title: "Dormitorio 2",
+                panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-4.jpg",
+                hotSpots: [
+                    { pitch: 0, yaw: 180, type: "scene", text: "Volver al Living", sceneId: "living" }
+                ]
+            },
+            baño: {
+                title: "Baño",
+                panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-5.jpg",
+                hotSpots: [
+                    { pitch: 0, yaw: -90, type: "scene", text: "Volver al Dormitorio 1", sceneId: "dormi1" }
+                ]
+            },
+            patio: {
+                title: "Patio / Quincho",
+                panorama: "https://raw.githubusercontent.com/jomviz/panoramas360/main/m2-6.jpg",
+                hotSpots: [
+                    { pitch: -10, yaw: 10, type: "scene", text: "Volver al Living", sceneId: "living" }
+                ]
+            }
+        };
+
+        function loadScene(id) {
             pannellum.viewer('panorama', {
-                "type": "equirectangular",
-                "panorama": "https://raw.githubusercontent.com/jomviz/panoramas360/main/" + img,
-                "autoLoad": true,
-                "showControls": true,
-                "compass": true,
-                "autoRotate": -2
+                default: { firstScene: id, sceneFadeDuration: 700 },
+                scenes: scenes
             });
         }
-        // Carga el primero al abrir
-        load('m2-1.jpg');
+
+        // Carga el living al abrir
+        loadScene('living');
     </script>
 </body>
 </html>
