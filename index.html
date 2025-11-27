@@ -1,30 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Panorama 360° - Tu Casa</title>
     <style>
-        body { margin: 0; padding: 0; overflow: hidden; }
+        body { margin: 0; padding: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
         #panorama { width: 100%; height: 100vh; }
+        .menu { position: absolute; top: 20px; left: 20px; z-index: 100; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; }
+        .menu button { margin: 5px; padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        .menu button:hover { background: #0056b3; }
     </style>
-    <!-- CDN de Pannellum (no necesitás descargar nada) -->
+    <!-- CDN de Pannellum - súper liviano -->
     <script src="https://cdn.pannellum.org/2.5/pannellum.js"></script>
     <link rel="stylesheet" href="https://cdn.pannellum.org/2.5/pannellum.css"/>
 </head>
 <body>
-    <div id="panorama" style="width:100%;height:100%;">
-        <!-- Configuración del panorama -->
-        <a-scene embedded pannellum="type: equirectangular; panorama: tu-imagen.jpg; autoLoad: true; showControls: true;"></a-scene>
+    <div id="panorama" style="width:100%;height:100%;"></div>
+    
+    <!-- Menú simple para cambiar entre panoramas -->
+    <div class="menu">
+        <button onclick="loadPanorama('m2-1.jpg')">Panorama 1 (Sala)</button>
+        <button onclick="loadPanorama('m2-1.jpg')">Panorama 2 (Cocina)</button>
     </div>
+
     <script>
-        pannellum.viewer('panorama', {
-            "type": "equirectangular",
-            "panorama": "m2-1.jpg",  // URL relativa a tu imagen en el repo
-            "autoLoad": true,
-            "showControls": true,
-            "hotSpots": []  // Agregá hotspots si querés (ej: enlaces a otros panoramas)
-        });
+        let viewer = null;
+        
+        function loadPanorama(imagePath) {
+            const config = {
+                "type": "equirectangular",
+                "panorama": imagePath,  // ¡Acá cambiá por el nombre exacto de tu imagen!
+                "autoLoad": true,
+                "showControls": true,
+                "compass": true,
+                "northOffset": 0,
+                "hotSpots": []  // Agregá hotspots si querés enlaces entre panoramas
+            };
+            
+            if (viewer) viewer.destroy();
+            viewer = pannellum.viewer('panorama', config);
+        }
+        
+        // Carga el primero por default
+        window.onload = function() { loadPanorama('imagen1.jpg'); };
     </script>
 </body>
 </html>
